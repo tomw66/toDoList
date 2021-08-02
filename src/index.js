@@ -54,8 +54,24 @@ const taskGroup = (() => {
 })();
 
 const manager = (() => {
-    const content = document.querySelector('#projectList');
-    const addProjectButton = content.querySelector('#addProject');
+    const projectList = document.querySelector('#projectList');
+    console.log(projectList);
+    const addProjectButton = projectList.querySelector('#addProject');
+    const taskList = document.querySelector('#taskList');
+    const addTaskButton = taskList.querySelector('#addTask');
+    console.log(addProjectButton);
+
+    const openForm = () => {
+        document.getElementById("form").style.display = "block";
+    }
+
+    const closeForm = () => {
+        document.getElementById("form").style.display = "none";
+    }
+
+    const activeProject = () => {
+
+    }
 
     const addProject = () => {
         let name = prompt('Project Name');
@@ -65,6 +81,11 @@ const manager = (() => {
         projectList.appendChild(projectButton) 
     }
     addProjectButton.addEventListener('click', addProject);
+
+    const addTask = () => {
+        openForm()
+    }
+    addTaskButton.addEventListener('click', addTask);
 
 })();
 let a = new projectGroup.Project('smeggy');

@@ -8,7 +8,31 @@
 <body>
 <div id="content">
     <div id="projectList">
+        <button id="Default">Default</button>
         <button id="addProject">Add Project</button>
+    </div>
+    <div id="taskList">
+        <button id="addTask">Add Task</button>
+        <div id="form">
+            <form>
+                <h2>Add new task</h2>
+                <label for="title">Title:</label><br>
+                <input type="text" id="title" name="title"><br><br>
+                <label for="description">Description:</label><br>
+                <textarea id="description" name="description" rows="10" cols="30"></textarea><br><br>
+                <label for="dueDate">Due Date:</label><br>
+                <input type="date" id="dueDate" name="dueDate"><br><br>
+                <label for="priority">Priority:</label>
+                <select id="priority" name="priority">
+                  <option value="high">high</option>
+                  <option value="medium">medium</option>
+                  <option value="low">low</option>
+                </select><br><br>
+                <input type="checkbox" id="complete" name="complete">
+                <label for="complete">Complete</label><br><br>
+                <button type ="submit">Submit</button>
+                <button onclick="closeForm()" type="button">Close</button>
+            </form></div>
     </div>
 </div>
 
