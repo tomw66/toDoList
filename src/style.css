@@ -1,0 +1,10 @@
+#projectList {
+    height: 100%;
+    width: 20%;
+    position: fixed;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 60px;
+    display: flex;
+    flex-direction: column; 
+}
