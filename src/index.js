@@ -1,5 +1,5 @@
 import './style.css';
-
+let myProject = [];
 const projectGroup = (() => {
     class Project {
         constructor (name) {
@@ -34,8 +34,14 @@ const taskGroup = (() => {
         }};
     
     const createTask = () => {
-        let newTask = new Task();
+        title = document.getElementById('title').value;
+        description = document.getElementById('description').value;
+        dueDate = document.getElementById('dueDate').value;
+        priority = document.getElementById('priority').value;
+        complete = document.getElementById('complete').checked;
+        let newTask = new Task(title, description, dueDate, priority, complete);
         myProject.push(newTask);
+        console.log(newTask, myProject);
     }
 
     const editTask = () => {
@@ -55,11 +61,9 @@ const taskGroup = (() => {
 
 const manager = (() => {
     const projectList = document.querySelector('#projectList');
-    console.log(projectList);
     const addProjectButton = projectList.querySelector('#addProject');
     const taskList = document.querySelector('#taskList');
     const addTaskButton = taskList.querySelector('#addTask');
-    console.log(addProjectButton);
 
     const openForm = () => {
         document.getElementById("form").style.display = "block";
@@ -83,12 +87,13 @@ const manager = (() => {
     addProjectButton.addEventListener('click', addProject);
 
     const addTask = () => {
-        openForm()
+        taskGroup.createTask();
     }
-    addTaskButton.addEventListener('click', addTask);
+    addTaskButton.addEventListener('click', openForm);
+    document.getElementById('form').addEventListener('submit', addTask);
 
 })();
-let a = new projectGroup.Project('smeggy');
-a.list.push('yes');
+//let a = new projectGroup.Project('smeggy');
+//a.list.push('yes');
 
-console.log(a, a.name)
+//console.log(a, a.name)
