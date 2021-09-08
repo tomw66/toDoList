@@ -41,7 +41,7 @@ const taskGroup = (() => {
         complete = document.getElementById('complete').checked;
         let newTask = new Task(title, description, dueDate, priority, complete);
         myProject.push(newTask);
-        console.log(newTask, myProject);
+        //console.log(newTask, myProject);
     }
 
     const editTask = () => {
@@ -64,6 +64,7 @@ const manager = (() => {
     const addProjectButton = projectList.querySelector('#addProject');
     const taskList = document.querySelector('#taskList');
     const addTaskButton = taskList.querySelector('#addTask');
+    const closeTaskFormButton = taskList.querySelector('#closeTaskForm');
 
     const openForm = () => {
         document.getElementById("form").style.display = "block";
@@ -86,10 +87,27 @@ const manager = (() => {
     }
     addProjectButton.addEventListener('click', addProject);
 
+
+    const displayTasks = () => {
+        console.log(myProject[myProject.length - 1].title+myProject[myProject.length - 1].dueDate);
+        const card = document.createElement('div');
+        card.classList.add('card');
+        taskList.appendChild(card);  
+        card.id = "card" + (myProject.length - 1);
+        let text = document.createElement('div');
+        text.textContent = myProject[myProject.length - 1].title;
+        card.classList.add('text');
+        card.appendChild(text);  
+    }
+
     const addTask = () => {
         taskGroup.createTask();
+        displayTasks();
+        closeForm();
+
     }
     addTaskButton.addEventListener('click', openForm);
+    closeTaskFormButton.addEventListener('click', closeForm);
     document.getElementById('form').addEventListener('submit', addTask);
 
 })();

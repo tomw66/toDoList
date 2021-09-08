@@ -22,3 +22,29 @@
     background-color: white;
 
 }
+
+.card{
+    background-color: #eee;
+    margin: 10px;
+    width: 300px;
+}
+
+.card:nth-child(odd) {
+    background: #f9f9f9;
+  }
+
+.card:hover {
+    background: #ddd;
+  }
+  
+.text {
+    text-align: center;
+    padding: 10px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 21px;
+}
+
+#taskList {
+    display: grid;
+    border: solid;
+}
