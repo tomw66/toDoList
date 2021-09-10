@@ -11,6 +11,9 @@
   display: flex;
   flex-direction: column;
 }
+.project:active{
+  font-weight: bold;
+}
 #addProject {
   order: 1;
 }

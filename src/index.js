@@ -1,5 +1,4 @@
 import "./style.css";
-let myProject = [];
 const projectGroup = (() => {
   class Project {
     constructor(name) {
@@ -7,6 +6,7 @@ const projectGroup = (() => {
       this.list = [];
     }
   }
+  let activeProject = new Project('Default');
 
   const createProject = (name) => {
     let newProject = new Project(name);
@@ -16,11 +16,11 @@ const projectGroup = (() => {
   const deleteProject = () => {};
   return {
     Project,
+    activeProject,
     createProject,
     deleteProject,
   };
 })();
-
 const taskGroup = (() => {
   class Task {
     constructor(title, description, dueDate, priority, complete) {
@@ -39,8 +39,8 @@ const taskGroup = (() => {
     priority = document.getElementById("priority").value;
     complete = document.getElementById("complete").checked;
     let newTask = new Task(title, description, dueDate, priority, complete);
-    myProject.push(newTask);
-    //console.log(newTask, myProject);
+    projectGroup.activeProject.list.push(newTask);
+    console.log(projectGroup.activeProject);
   };
 
   const editTask = () => {};
@@ -60,7 +60,6 @@ const manager = (() => {
   const taskList = document.querySelector("#taskList");
   const addTaskButton = taskList.querySelector("#addTask");
   const closeTaskFormButton = taskList.querySelector("#closeTaskForm");
-
   const openForm = () => {
     document.getElementById("form").style.display = "block";
   };
@@ -69,28 +68,35 @@ const manager = (() => {
     document.getElementById("form").style.display = "none";
   };
 
-  const activeProject = () => {};
-
   const addProject = () => {
     let name = prompt("Project Name");
     let newProject = new projectGroup.Project(name);
+    console.log(projectGroup.activeProject);
     const projectButton = document.createElement("button");
     projectButton.textContent = name;
+    projectButton.classList.add("project");
     projectList.appendChild(projectButton);
+    projectGroup.activeProject = newProject;
+    console.log(projectGroup.activeProject);
+
   };
   addProjectButton.addEventListener("click", addProject);
+  const projectButtons = projectList.querySelectorAll('.project');
+  projectButtons.addEventListener('click', ...) //this is where I stopped... 
+
 
   const displayTasks = () => {
     const newCard = document.createElement("div");
     newCard.classList.add("card");
     taskList.appendChild(newCard);
-    newCard.id = "card" + (myProject.length - 1);
+    const Tasks = projectGroup.activeProject.list;
+    newCard.id = "card" + (Tasks.length - 1);
     let cardTitle = document.createElement("div");
-    cardTitle.textContent = myProject[myProject.length - 1].title;
+    cardTitle.textContent = Tasks[Tasks.length - 1].title;
     cardTitle.classList.add("cardTitle");
     newCard.appendChild(cardTitle);
     let cardDate = document.createElement("div");
-    cardDate.textContent = myProject[myProject.length - 1].dueDate;
+    cardDate.textContent = Tasks[Tasks.length - 1].dueDate;
     cardDate.classList.add("cardDate");
     newCard.appendChild(cardDate);
   };
