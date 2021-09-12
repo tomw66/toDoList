@@ -6,7 +6,8 @@ const projectGroup = (() => {
       this.list = [];
     }
   }
-  let activeProject = new Project('Default');
+  let defaultProject = new Project('Default');
+  let activeProject = defaultProject;
 
   const createProject = (name) => {
     let newProject = new Project(name);
@@ -16,6 +17,7 @@ const projectGroup = (() => {
   const deleteProject = () => {};
   return {
     Project,
+    defaultProject,
     activeProject,
     createProject,
     deleteProject,
@@ -60,6 +62,7 @@ const manager = (() => {
   const taskList = document.querySelector("#taskList");
   const addTaskButton = taskList.querySelector("#addTask");
   const closeTaskFormButton = taskList.querySelector("#closeTaskForm");
+
   const openForm = () => {
     document.getElementById("form").style.display = "block";
   };
@@ -71,21 +74,41 @@ const manager = (() => {
   const addProject = () => {
     let name = prompt("Project Name");
     let newProject = new projectGroup.Project(name);
-    console.log(projectGroup.activeProject);
     const projectButton = document.createElement("button");
     projectButton.textContent = name;
     projectButton.classList.add("project");
     projectList.appendChild(projectButton);
-    projectGroup.activeProject = newProject;
-    console.log(projectGroup.activeProject);
+    displayActiveTasks(newProject);
+    projectButton.addEventListener('click', displayActiveTasks.bind(null, newProject)); 
 
+    projectGroup.activeProject = newProject;
   };
   addProjectButton.addEventListener("click", addProject);
-  const projectButtons = projectList.querySelectorAll('.project');
-  projectButtons.addEventListener('click', ...) //this is where I stopped... 
 
+  const displayActiveTasks = (a) => {
+    projectGroup.activeProject = a;
+    console.log('click');
+    document.querySelectorAll('.card').forEach(e => e.remove());
+    for (let i =0; i< projectGroup.activeProject.list.length; i++) {
+      const newCard = document.createElement("div");
+      newCard.classList.add("card");
+      taskList.appendChild(newCard);
+      const Tasks = projectGroup.activeProject.list;
+      newCard.id = "card" + (i);
+      let cardTitle = document.createElement("div");
+      cardTitle.textContent = Tasks[i].title;
+      cardTitle.classList.add("cardTitle");
+      newCard.appendChild(cardTitle);
+      let cardDate = document.createElement("div");
+      cardDate.textContent = Tasks[i].dueDate;
+      cardDate.classList.add("cardDate");
+      newCard.appendChild(cardDate);
+    }
+  }
+  const defaultButton = projectList.querySelector('#Default');
+  defaultButton.addEventListener('click', displayActiveTasks.bind(null, projectGroup.defaultProject)); //Implementation of default could be better!
 
-  const displayTasks = () => {
+  const displayNewTask = () => {
     const newCard = document.createElement("div");
     newCard.classList.add("card");
     taskList.appendChild(newCard);
@@ -103,7 +126,7 @@ const manager = (() => {
 
   const addTask = () => {
     taskGroup.createTask();
-    displayTasks();
+    displayNewTask();
     closeForm();
   };
 
