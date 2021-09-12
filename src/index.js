@@ -1,4 +1,5 @@
 import "./style.css";
+import Icon from "./delete_black_24dp.svg"
 const projectGroup = (() => {
   class Project {
     constructor(name) {
@@ -85,48 +86,38 @@ const manager = (() => {
   };
   addProjectButton.addEventListener("click", addProject);
 
+  const updateTaskDisplay = (Tasks, i) => {
+    const newCard = document.createElement("div");
+    newCard.classList.add("card");
+    taskList.appendChild(newCard);
+    newCard.id = "card" + (i);
+    let cardTitle = document.createElement("div");
+    cardTitle.textContent = Tasks[i].title;
+    cardTitle.classList.add("cardTitle");
+    newCard.appendChild(cardTitle);
+    let cardDate = document.createElement("div");
+    cardDate.textContent = Tasks[i].dueDate;
+    cardDate.classList.add("cardDate");
+    newCard.appendChild(cardDate);
+    const deleteIcon = new Image();
+    deleteIcon.src = Icon;
+    deleteIcon.classList.add('deleteIcon');
+    newCard.appendChild(deleteIcon);
+  }
   const displayActiveTasks = (a) => {
     projectGroup.activeProject = a;
     console.log('click');
     document.querySelectorAll('.card').forEach(e => e.remove());
     for (let i =0; i< projectGroup.activeProject.list.length; i++) {
-      const newCard = document.createElement("div");
-      newCard.classList.add("card");
-      taskList.appendChild(newCard);
-      const Tasks = projectGroup.activeProject.list;
-      newCard.id = "card" + (i);
-      let cardTitle = document.createElement("div");
-      cardTitle.textContent = Tasks[i].title;
-      cardTitle.classList.add("cardTitle");
-      newCard.appendChild(cardTitle);
-      let cardDate = document.createElement("div");
-      cardDate.textContent = Tasks[i].dueDate;
-      cardDate.classList.add("cardDate");
-      newCard.appendChild(cardDate);
+      updateTaskDisplay(projectGroup.activeProject.list, i);
     }
   }
   const defaultButton = projectList.querySelector('#Default');
   defaultButton.addEventListener('click', displayActiveTasks.bind(null, projectGroup.defaultProject)); //Implementation of default could be better!
 
-  const displayNewTask = () => {
-    const newCard = document.createElement("div");
-    newCard.classList.add("card");
-    taskList.appendChild(newCard);
-    const Tasks = projectGroup.activeProject.list;
-    newCard.id = "card" + (Tasks.length - 1);
-    let cardTitle = document.createElement("div");
-    cardTitle.textContent = Tasks[Tasks.length - 1].title;
-    cardTitle.classList.add("cardTitle");
-    newCard.appendChild(cardTitle);
-    let cardDate = document.createElement("div");
-    cardDate.textContent = Tasks[Tasks.length - 1].dueDate;
-    cardDate.classList.add("cardDate");
-    newCard.appendChild(cardDate);
-  };
-
   const addTask = () => {
     taskGroup.createTask();
-    displayNewTask();
+    updateTaskDisplay(projectGroup.activeProject.list, projectGroup.activeProject.list.length - 1);
     closeForm();
   };
 
