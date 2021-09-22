@@ -43,12 +43,13 @@ const taskGroup = (() => {
     complete = document.getElementById("complete").checked;
     let newTask = new Task(title, description, dueDate, priority, complete);
     projectGroup.activeProject.list.push(newTask);
-    console.log(projectGroup.activeProject);
   };
 
   const editTask = () => {};
 
-  const deleteTask = () => {};
+  const deleteTask = (i) => {
+    projectGroup.activeProject.list.splice(i, 1)
+  };
   return {
     Task,
     createTask,
@@ -102,11 +103,13 @@ const manager = (() => {
     const deleteIcon = new Image();
     deleteIcon.src = Icon;
     deleteIcon.classList.add('deleteIcon');
+    deleteIcon.addEventListener('click', deleteTask.bind(null, i));
     newCard.appendChild(deleteIcon);
   }
   const displayActiveTasks = (a) => {
-    projectGroup.activeProject = a;
-    console.log('click');
+    if (a !== undefined) {
+      projectGroup.activeProject = a;
+    }
     document.querySelectorAll('.card').forEach(e => e.remove());
     for (let i =0; i< projectGroup.activeProject.list.length; i++) {
       updateTaskDisplay(projectGroup.activeProject.list, i);
@@ -124,6 +127,12 @@ const manager = (() => {
   const editTask = () => {
     document.getElementById("editForm").style.display = "block";
   }
+
+  const deleteTask = (index) => {
+    taskGroup.deleteTask(index);
+    displayActiveTasks();
+  }
+
   addTaskButton.addEventListener("click", openForm);
   closeTaskFormButton.addEventListener("click", closeForm);
   document.getElementById("form").addEventListener("submit", addTask);
