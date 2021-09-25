@@ -9,8 +9,7 @@ const projectGroup = (() => {
       this.list = [];
     }
   }
-  let defaultProject = new Project('Default');
-  let activeProject = defaultProject;
+  let activeProject;
 
   const createProject = (name) => {
     let newProject = new Project(name);
@@ -20,7 +19,6 @@ const projectGroup = (() => {
   const deleteProject = () => {};
   return {
     Project,
-    defaultProject,
     activeProject,
     createProject,
     deleteProject,
@@ -47,14 +45,16 @@ const taskGroup = (() => {
     projectGroup.activeProject.list.push(newTask);
   };
 
-  const editTask = (i) => {
+  const editTask = () => {
     const title = document.getElementById("editTitle").value;
     const description = document.getElementById("editDescription").value;
     const dueDate = document.getElementById("editDueDate").value;
     const priority = document.getElementById("editPriority").value;
     const complete = document.getElementById("editComplete").checked;
-    let newTask = new Task(title, description, dueDate, priority, complete);
-    projectGroup.activeProject.list.splice(i, 1, newTask);
+    let amendedTask = new Task(title, description, dueDate, priority, complete);
+    let activeCard = document.getElementsByClassName('active')[0];
+    const i = activeCard.id.substring(4);
+    projectGroup.activeProject.list.splice(i, 1, amendedTask);
   };
 
   const deleteTask = (i) => {
@@ -87,6 +87,8 @@ const manager = (() => {
 
   const openEditTaskForm = (index) => {
     const selectedTask = projectGroup.activeProject.list[index];
+    const activeCard = document.getElementById("card" + index);
+    activeCard.classList.add("active");
     document.getElementById("editTitle").value = selectedTask.title;
     document.getElementById("editDescription").value = selectedTask.description;
     document.getElementById("editDueDate").value = selectedTask.dueDate;
@@ -99,19 +101,22 @@ const manager = (() => {
     document.getElementById("editTaskForm").style.display = "none";
   };
 
-  const addProject = () => {
+  const promptProject = () => {
     let name = prompt("Project Name");
+    addProject(name);
+  };
+
+  const addProject = (name) => {
     let newProject = new projectGroup.Project(name);
     const projectButton = document.createElement("button");
     projectButton.textContent = name;
     projectButton.classList.add("project");
     projectList.appendChild(projectButton);
-    displayActiveTasks(newProject);
-    projectButton.addEventListener('click', displayActiveTasks.bind(null, newProject)); 
-
+    displayActiveTasks(newProject, projectButton);
+    projectButton.addEventListener('click', displayActiveTasks.bind(null, newProject, projectButton)); 
     projectGroup.activeProject = newProject;
   };
-  addProjectButton.addEventListener("click", addProject);
+  addProjectButton.addEventListener("click", promptProject);
 
   const updateTaskDisplay = (Tasks, i) => {
     const newCard = document.createElement("div");
@@ -138,17 +143,22 @@ const manager = (() => {
     newCard.appendChild(deleteIcon);
 
   }
-  const displayActiveTasks = (a) => {
+  const displayActiveTasks = (a, b) => {
     if (a !== undefined) {
       projectGroup.activeProject = a;
+    }
+    if (b !== undefined) {
+      let projects = document.getElementsByClassName('project');
+      for (let i=0; i < projects.length; i++) {
+        projects.item(i).classList.remove('activeProject');
+      }
+      b.classList.add('activeProject');
     }
     document.querySelectorAll('.card').forEach(e => e.remove());
     for (let i =0; i< projectGroup.activeProject.list.length; i++) {
       updateTaskDisplay(projectGroup.activeProject.list, i);
     }
   }
-  const defaultButton = projectList.querySelector('#Default');
-  defaultButton.addEventListener('click', displayActiveTasks.bind(null, projectGroup.defaultProject)); //Implementation of default could be better!
 
   const addTask = () => {
     taskGroup.createTask();
@@ -157,7 +167,6 @@ const manager = (() => {
   };
 
   const editTask = (index) => {
-    console.log(index);
     taskGroup.editTask(index);
     document.querySelectorAll('.card').forEach(e => e.remove());
     for (let i =0; i< projectGroup.activeProject.list.length; i++) {
@@ -166,9 +175,8 @@ const manager = (() => {
     closeEditTaskForm();
   }
 
-  const deleteTask = (index) => {
-    console.log(index);
-    taskGroup.deleteTask(index);
+  const deleteTask = () => {
+    taskGroup.deleteTask();
     displayActiveTasks();
   }
 
@@ -177,4 +185,5 @@ const manager = (() => {
   closeEditTaskFormButton.addEventListener("click", closeEditTaskForm);
   document.getElementById("addTaskForm").addEventListener("submit", addTask);
   document.getElementById("editTaskForm").addEventListener("submit", editTask);
+  addProject('Default');
 })();
