@@ -13,31 +13,58 @@
       </div>
       <div id="taskList">
         <button id="addTask">Add Task</button>
-        <div id="form">
+        <div id="addTaskForm" class="form">
           <form onsubmit="return false">
             <h2>Add new task</h2>
-            <label for="title">Title:</label><br />
-            <input type="text" id="title" name="title" /><br /><br />
-            <label for="description">Description:</label><br />
+            <label for="addTitle">Title:</label><br />
+            <input type="text" id="addTitle" name="addTitle" /><br /><br />
+            <label for="addDescription">Description:</label><br />
             <textarea
-              id="description"
-              name="description"
+              id="addDescription"
+              name="addDescription"
               rows="10"
               cols="30"
             ></textarea
             ><br /><br />
-            <label for="dueDate">Due Date:</label><br />
-            <input type="date" id="dueDate" name="dueDate" /><br /><br />
-            <label for="priority">Priority:</label>
-            <select id="priority" name="priority">
+            <label for="addDueDate">Due Date:</label><br />
+            <input type="date" id="addDueDate" name="addDueDate" /><br /><br />
+            <label for="addPriority">Priority:</label>
+            <select id="addPriority" name="addPriority">
               <option value="high">high</option>
               <option value="medium">medium</option>
               <option value="low">low</option></select
             ><br /><br />
-            <input type="checkbox" id="complete" name="complete" />
-            <label for="complete">Complete</label><br /><br />
+            <input type="checkbox" id="addComplete" name="addComplete" />
+            <label for="addComplete">Complete</label><br /><br />
             <button type="submit">Submit</button>
-            <button id="closeTaskForm" type="button">Close</button>
+            <button id="closeAddTaskForm" type="button">Close</button>
+          </form>
+        </div>
+        <div id="editTaskForm" class="form">
+          <form onsubmit="return false">
+            <h2>Edit task</h2>
+            <label for="editTitle">Title:</label><br />
+            <input type="text" id="editTitle" name="editTitle" /><br /><br />
+            <label for="editDescription">Description:</label><br />
+            <textarea
+              id="editDescription"
+              name="editDescription"
+              rows="10"
+              cols="30"
+            ></textarea
+            ><br /><br />
+            <label for="editDueDate">Due Date:</label><br />
+            <input type="date" id="editDueDate" name="editDueDate" /><br /><br />
+            <label for="editPriority">Priority:</label>
+            <select id="editPriority" name="editPriority">
+              <option value="high">high</option>
+              <option value="medium">medium</option>
+              <option value="low">low</option></select
+            ><br /><br />
+            <input type="checkbox" id="editComplete" name="editComplete" />
+            <label for="editComplete">Complete</label><br /><br />
+            <button type="submit">Submit</button>
+            <button id="closeEditTaskForm"type="button">Close</button>
           </form>
         </div>
       </div>

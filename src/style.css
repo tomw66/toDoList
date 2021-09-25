@@ -18,7 +18,7 @@
   order: 1;
 }
 
-#form {
+.form {
   display: none;
   position: absolute;
   border: solid;
@@ -35,7 +35,7 @@
 }
 .card {
   display: grid;
-  grid-template-columns: auto auto 40px;
+  grid-template-columns: auto auto 40px 40px;
   background-color: #FFECC7;
   margin: 10px;
   width: 400px;
@@ -67,6 +67,11 @@
 .deleteIcon {
   padding: 10px;
 }
+
+.editIcon {
+  padding: 10px;
+}
+
 #taskList {
   display: grid;
 }

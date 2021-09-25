@@ -1,5 +1,7 @@
 import "./style.css";
-import Icon from "./delete_black_24dp.svg"
+import penIcon from "./edit_black_24dp.svg"
+import binIcon from "./delete_black_24dp.svg"
+
 const projectGroup = (() => {
   class Project {
     constructor(name) {
@@ -36,16 +38,24 @@ const taskGroup = (() => {
   }
 
   const createTask = () => {
-    title = document.getElementById("title").value;
-    description = document.getElementById("description").value;
-    dueDate = document.getElementById("dueDate").value;
-    priority = document.getElementById("priority").value;
-    complete = document.getElementById("complete").checked;
+    const title = document.getElementById("addTitle").value;
+    const description = document.getElementById("addDescription").value;
+    const dueDate = document.getElementById("addDueDate").value;
+    const priority = document.getElementById("addPriority").value;
+    const complete = document.getElementById("addComplete").checked;
     let newTask = new Task(title, description, dueDate, priority, complete);
     projectGroup.activeProject.list.push(newTask);
   };
 
-  const editTask = () => {};
+  const editTask = (i) => {
+    const title = document.getElementById("editTitle").value;
+    const description = document.getElementById("editDescription").value;
+    const dueDate = document.getElementById("editDueDate").value;
+    const priority = document.getElementById("editPriority").value;
+    const complete = document.getElementById("editComplete").checked;
+    let newTask = new Task(title, description, dueDate, priority, complete);
+    projectGroup.activeProject.list.splice(i, 1, newTask);
+  };
 
   const deleteTask = (i) => {
     projectGroup.activeProject.list.splice(i, 1)
@@ -63,14 +73,30 @@ const manager = (() => {
   const addProjectButton = projectList.querySelector("#addProject");
   const taskList = document.querySelector("#taskList");
   const addTaskButton = taskList.querySelector("#addTask");
-  const closeTaskFormButton = taskList.querySelector("#closeTaskForm");
+  const closeAddTaskFormButton = taskList.querySelector("#closeAddTaskForm");
+  const closeEditTaskFormButton = taskList.querySelector("#closeEditTaskForm");
 
-  const openForm = () => {
-    document.getElementById("form").style.display = "block";
+
+  const openAddTaskForm = () => {
+    document.getElementById("addTaskForm").style.display = "block";
   };
 
-  const closeForm = () => {
-    document.getElementById("form").style.display = "none";
+  const closeAddTaskForm = () => {
+    document.getElementById("addTaskForm").style.display = "none";
+  };
+
+  const openEditTaskForm = (index) => {
+    const selectedTask = projectGroup.activeProject.list[index];
+    document.getElementById("editTitle").value = selectedTask.title;
+    document.getElementById("editDescription").value = selectedTask.description;
+    document.getElementById("editDueDate").value = selectedTask.dueDate;
+    document.getElementById("editPriority").value = selectedTask.priority;
+    document.getElementById("editComplete").checked = selectedTask.complete;
+    document.getElementById("editTaskForm").style.display = "block";
+  };
+
+  const closeEditTaskForm = () => {
+    document.getElementById("editTaskForm").style.display = "none";
   };
 
   const addProject = () => {
@@ -100,11 +126,17 @@ const manager = (() => {
     cardDate.textContent = Tasks[i].dueDate;
     cardDate.classList.add("cardDate");
     newCard.appendChild(cardDate);
+    const editIcon = new Image();
+    editIcon.src = penIcon;
+    editIcon.classList.add('editIcon');
+    editIcon.addEventListener('click', openEditTaskForm.bind(null, i));
+    newCard.appendChild(editIcon);
     const deleteIcon = new Image();
-    deleteIcon.src = Icon;
+    deleteIcon.src = binIcon;
     deleteIcon.classList.add('deleteIcon');
     deleteIcon.addEventListener('click', deleteTask.bind(null, i));
     newCard.appendChild(deleteIcon);
+
   }
   const displayActiveTasks = (a) => {
     if (a !== undefined) {
@@ -121,24 +153,28 @@ const manager = (() => {
   const addTask = () => {
     taskGroup.createTask();
     updateTaskDisplay(projectGroup.activeProject.list, projectGroup.activeProject.list.length - 1);
-    closeForm();
+    closeAddTaskForm();
   };
 
-  const editTask = () => {
-    document.getElementById("editForm").style.display = "block";
+  const editTask = (index) => {
+    console.log(index);
+    taskGroup.editTask(index);
+    document.querySelectorAll('.card').forEach(e => e.remove());
+    for (let i =0; i< projectGroup.activeProject.list.length; i++) {
+      updateTaskDisplay(projectGroup.activeProject.list, i);
+    }    
+    closeEditTaskForm();
   }
 
   const deleteTask = (index) => {
+    console.log(index);
     taskGroup.deleteTask(index);
     displayActiveTasks();
   }
 
-  addTaskButton.addEventListener("click", openForm);
-  closeTaskFormButton.addEventListener("click", closeForm);
-  document.getElementById("form").addEventListener("submit", addTask);
-  taskList.addEventListener('click',function(e){
-    if(e.target.classList == 'cardDate' || e.target.classList == 'cardTitle'){
-      editTask()
-     }
- });
+  addTaskButton.addEventListener("click", openAddTaskForm);
+  closeAddTaskFormButton.addEventListener("click", closeAddTaskForm);
+  closeEditTaskFormButton.addEventListener("click", closeEditTaskForm);
+  document.getElementById("addTaskForm").addEventListener("submit", addTask);
+  document.getElementById("editTaskForm").addEventListener("submit", editTask);
 })();
