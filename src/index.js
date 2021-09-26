@@ -12,10 +12,23 @@ const projectGroup = (() => {
   let activeProject;
   let projects = [];
 
+  const populateStorage = () => {
+    localStorage.setItem('projectList', projects);
+    localStorage.setItem('activeProject', projectGroup.activeProject);
+    console.log(projects)
+  }
+
+  const getProjects = () => {
+    projects = localStorage.getItem('projectList');
+    projectGroup.activeProject = localStorage.getItem('activeProject');
+    console.log(projectGroup.activeProject);
+  }
   return {
     Project,
     activeProject,
     projects,
+    populateStorage,
+    getProjects,
   };
 })();
 
@@ -137,6 +150,8 @@ const manager = (() => {
     deleteIcon.classList.add('deleteIcon');
     deleteIcon.addEventListener('click', deleteTask.bind(null, i));
     newCard.appendChild(deleteIcon);
+    projectGroup.populateStorage();
+    console.log(projectGroup.projects);
 
   }
   const displayActiveTasks = (a, b) => {
@@ -174,7 +189,6 @@ const manager = (() => {
   const deleteTask = () => {
     taskGroup.deleteTask();
     displayActiveTasks();
-    console.log(projectGroup.projects)
   }
 
   addTaskButton.addEventListener("click", openAddTaskForm);
@@ -182,5 +196,13 @@ const manager = (() => {
   closeEditTaskFormButton.addEventListener("click", closeEditTaskForm);
   document.getElementById("addTaskForm").addEventListener("submit", addTask);
   document.getElementById("editTaskForm").addEventListener("submit", editTask);
-  addProject('Default');
+
+  if(localStorage.activeProject !== "undefined") {
+    console.log(localStorage.activeProject);
+    projectGroup.getProjects();
+    displayActiveTasks(); //and then something remembering default
+  }
+  else {
+    addProject('Default');
+  }
 })();
