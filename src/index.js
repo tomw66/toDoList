@@ -10,20 +10,15 @@ const projectGroup = (() => {
     }
   }
   let activeProject;
+  let projects = [];
 
-  const createProject = (name) => {
-    let newProject = new Project(name);
-    return { newProject };
-  };
-
-  const deleteProject = () => {};
   return {
     Project,
     activeProject,
-    createProject,
-    deleteProject,
+    projects,
   };
 })();
+
 const taskGroup = (() => {
   class Task {
     constructor(title, description, dueDate, priority, complete) {
@@ -108,6 +103,7 @@ const manager = (() => {
 
   const addProject = (name) => {
     let newProject = new projectGroup.Project(name);
+    projectGroup.projects.push(newProject); //move to projectgroup?
     const projectButton = document.createElement("button");
     projectButton.textContent = name;
     projectButton.classList.add("project");
@@ -178,6 +174,7 @@ const manager = (() => {
   const deleteTask = () => {
     taskGroup.deleteTask();
     displayActiveTasks();
+    console.log(projectGroup.projects)
   }
 
   addTaskButton.addEventListener("click", openAddTaskForm);
