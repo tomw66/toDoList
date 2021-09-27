@@ -1,6 +1,7 @@
 import "./style.css";
-import penIcon from "./edit_black_24dp.svg"
-import binIcon from "./delete_black_24dp.svg"
+import penIcon from "./edit_black_24dp.svg";
+import binIcon from "./delete_black_24dp.svg";
+//localStorage.clear();
 
 const projectGroup = (() => {
   class Project {
@@ -13,16 +14,19 @@ const projectGroup = (() => {
   let projects = [];
 
   const populateStorage = () => {
-    localStorage.setItem('projectList', projects);
-    localStorage.setItem('activeProject', projectGroup.activeProject);
-    console.log(projects)
-  }
+    localStorage.setItem("projectList", JSON.stringify(projectGroup.projects));
+    localStorage.setItem(
+      "activeProject",
+      JSON.stringify(projectGroup.activeProject)
+    );
+  };
 
   const getProjects = () => {
-    projects = localStorage.getItem('projectList');
-    projectGroup.activeProject = localStorage.getItem('activeProject');
-    console.log(projectGroup.activeProject);
-  }
+    projectGroup.projects = JSON.parse(localStorage.getItem("projectList"));
+    projectGroup.activeProject = JSON.parse(
+      localStorage.getItem("activeProject")
+    );
+  };
   return {
     Project,
     activeProject,
@@ -60,13 +64,13 @@ const taskGroup = (() => {
     const priority = document.getElementById("editPriority").value;
     const complete = document.getElementById("editComplete").checked;
     let amendedTask = new Task(title, description, dueDate, priority, complete);
-    let activeCard = document.getElementsByClassName('active')[0];
+    let activeCard = document.getElementsByClassName("active")[0];
     const i = activeCard.id.substring(4);
     projectGroup.activeProject.list.splice(i, 1, amendedTask);
   };
 
   const deleteTask = (i) => {
-    projectGroup.activeProject.list.splice(i, 1)
+    projectGroup.activeProject.list.splice(i, 1);
   };
   return {
     Task,
@@ -83,7 +87,6 @@ const manager = (() => {
   const addTaskButton = taskList.querySelector("#addTask");
   const closeAddTaskFormButton = taskList.querySelector("#closeAddTaskForm");
   const closeEditTaskFormButton = taskList.querySelector("#closeEditTaskForm");
-
 
   const openAddTaskForm = () => {
     document.getElementById("addTaskForm").style.display = "block";
@@ -116,22 +119,34 @@ const manager = (() => {
 
   const addProject = (name) => {
     let newProject = new projectGroup.Project(name);
-    projectGroup.projects.push(newProject); //move to projectgroup?
-    const projectButton = document.createElement("button");
-    projectButton.textContent = name;
-    projectButton.classList.add("project");
-    projectList.appendChild(projectButton);
-    displayActiveTasks(newProject, projectButton);
-    projectButton.addEventListener('click', displayActiveTasks.bind(null, newProject, projectButton)); 
+    projectGroup.projects.push(newProject);
     projectGroup.activeProject = newProject;
+    updateProjectDisplay();
   };
   addProjectButton.addEventListener("click", promptProject);
+
+  const updateProjectDisplay = () => {
+    document.querySelectorAll(".project").forEach((e) => e.remove());
+    for (let i = 0; i < projectGroup.projects.length; i++) {
+      const projectButton = document.createElement("button");
+      projectButton.textContent = projectGroup.projects[i].name;
+      projectButton.classList.add("project");
+      projectList.appendChild(projectButton);
+      projectButton.addEventListener(
+        "click",
+        displayActiveTasks.bind(null, projectGroup.projects[i], projectButton)
+      );
+      if (projectGroup.projects[i].name === projectGroup.activeProject.name) {
+        displayActiveTasks(projectGroup.projects[i], projectButton);
+      }
+    }
+  };
 
   const updateTaskDisplay = (Tasks, i) => {
     const newCard = document.createElement("div");
     newCard.classList.add("card");
     taskList.appendChild(newCard);
-    newCard.id = "card" + (i);
+    newCard.id = "card" + i;
     let cardTitle = document.createElement("div");
     cardTitle.textContent = Tasks[i].title;
     cardTitle.classList.add("cardTitle");
@@ -142,54 +157,58 @@ const manager = (() => {
     newCard.appendChild(cardDate);
     const editIcon = new Image();
     editIcon.src = penIcon;
-    editIcon.classList.add('editIcon');
-    editIcon.addEventListener('click', openEditTaskForm.bind(null, i));
+    editIcon.classList.add("editIcon");
+    editIcon.addEventListener("click", openEditTaskForm.bind(null, i));
     newCard.appendChild(editIcon);
     const deleteIcon = new Image();
     deleteIcon.src = binIcon;
-    deleteIcon.classList.add('deleteIcon');
-    deleteIcon.addEventListener('click', deleteTask.bind(null, i));
+    deleteIcon.classList.add("deleteIcon");
+    deleteIcon.addEventListener("click", deleteTask.bind(null, i));
     newCard.appendChild(deleteIcon);
-    projectGroup.populateStorage();
-    console.log(projectGroup.projects);
+  };
 
-  }
   const displayActiveTasks = (a, b) => {
     if (a !== undefined) {
       projectGroup.activeProject = a;
     }
     if (b !== undefined) {
-      let projects = document.getElementsByClassName('project');
-      for (let i=0; i < projects.length; i++) {
-        projects.item(i).classList.remove('activeProject');
+      let projects = document.getElementsByClassName("project");
+      for (let i = 0; i < projects.length; i++) {
+        projects.item(i).classList.remove("activeProject");
       }
-      b.classList.add('activeProject');
+      b.classList.add("activeProject");
     }
-    document.querySelectorAll('.card').forEach(e => e.remove());
-    for (let i =0; i< projectGroup.activeProject.list.length; i++) {
+    document.querySelectorAll(".card").forEach((e) => e.remove());
+    for (let i = 0; i < projectGroup.activeProject.list.length; i++) {
       updateTaskDisplay(projectGroup.activeProject.list, i);
     }
-  }
+    projectGroup.populateStorage();
+  };
 
   const addTask = () => {
     taskGroup.createTask();
-    updateTaskDisplay(projectGroup.activeProject.list, projectGroup.activeProject.list.length - 1);
+    updateTaskDisplay(
+      projectGroup.activeProject.list,
+      projectGroup.activeProject.list.length - 1
+    );
     closeAddTaskForm();
+    projectGroup.populateStorage();
   };
 
   const editTask = (index) => {
     taskGroup.editTask(index);
-    document.querySelectorAll('.card').forEach(e => e.remove());
-    for (let i =0; i< projectGroup.activeProject.list.length; i++) {
+    document.querySelectorAll(".card").forEach((e) => e.remove());
+    for (let i = 0; i < projectGroup.activeProject.list.length; i++) {
       updateTaskDisplay(projectGroup.activeProject.list, i);
-    }    
+    }
     closeEditTaskForm();
-  }
+    projectGroup.populateStorage();
+  };
 
   const deleteTask = () => {
     taskGroup.deleteTask();
     displayActiveTasks();
-  }
+  };
 
   addTaskButton.addEventListener("click", openAddTaskForm);
   closeAddTaskFormButton.addEventListener("click", closeAddTaskForm);
@@ -197,12 +216,11 @@ const manager = (() => {
   document.getElementById("addTaskForm").addEventListener("submit", addTask);
   document.getElementById("editTaskForm").addEventListener("submit", editTask);
 
-  if(localStorage.activeProject !== "undefined") {
-    console.log(localStorage.activeProject);
+  if (localStorage.activeProject) {
     projectGroup.getProjects();
-    displayActiveTasks(); //and then something remembering default
-  }
-  else {
-    addProject('Default');
+    updateProjectDisplay();
+    displayActiveTasks();
+  } else {
+    addProject("Default");
   }
 })();
